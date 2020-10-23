@@ -1,4 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   tech.guyi.web.quick.permission.configuration.AutoConfiguration,\
-  tech.guyi.web.quick.permission.configuration.InterceptorConfiguration,\
-  tech.guyi.web.quick.permission.authorization.configuration.AuthorizationAutoConfiguration
+  tech.guyi.web.quick.permission.configuration.InterceptorConfiguration

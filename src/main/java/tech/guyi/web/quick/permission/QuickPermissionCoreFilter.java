@@ -3,9 +3,6 @@ package tech.guyi.web.quick.permission;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 import tech.guyi.web.quick.permission.authorization.AuthorizationCurrent;
-import tech.guyi.web.quick.permission.authorization.configuration.AuthorizationConfiguration;
-import tech.guyi.web.quick.permission.authorization.memory.AuthorizationInfoMemory;
-import tech.guyi.web.quick.permission.authorization.memory.AuthorizationInfoMemorySupplier;
 import tech.guyi.web.quick.permission.configuration.PermissionConfiguration;
 import tech.guyi.web.quick.permission.handler.AuthorizationHandler;
 import tech.guyi.web.quick.permission.handler.AuthorizationHandlerRepository;
@@ -16,6 +13,7 @@ import tech.guyi.web.quick.permission.mapping.entry.Mapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,33 +28,30 @@ public class QuickPermissionCoreFilter implements HandlerInterceptor {
     private AuthorizationHandlerRepository handlerRepository;
 
     @Resource
-    private AuthorizationCurrent current;
+    private List<AuthorizationCurrent> currents;
     @Resource
     private PermissionConfiguration configuration;
-    @Resource
-    private AuthorizationConfiguration authorizationConfiguration;
-    @Resource
-    private AuthorizationInfoMemorySupplier supplier;
 
-    private Optional<String> getToken(HttpServletRequest request){
-        String token = Optional.ofNullable(request.getParameter(configuration.getTokenName()))
-                .orElseGet(() -> request.getHeader(configuration.getTokenName()));
+    private Optional<String> getToken(HttpServletRequest request, String tokenName){
+        String token = Optional.ofNullable(request.getParameter(tokenName))
+                .orElseGet(() -> request.getHeader(tokenName));
         return Optional.ofNullable(token);
     }
 
     private void setCurrent(HttpServletRequest request, HttpServletResponse response){
-        AuthorizationInfoMemory memory = supplier.getMemory();
-        this.getToken(request)
-                .filter(memory::contains)
-                .ifPresent(token -> {
-                    current.currentKey(token);
-                    if (authorizationConfiguration.isAutoRenew()){
-                        String key = memory.renew(token);
-                        if (!token.equals(key)){
-                            response.setHeader(configuration.getTokenName(),key);
-                        }
-                    }
-                });
+        this.currents.forEach(current ->
+                this.getToken(request,current.getTokenName())
+                        .filter(current.getMemory()::contains)
+                        .ifPresent(token -> {
+                            current.currentKey(token);
+                            if (configuration.getAuthorization().isAutoRenew()){
+                                String key = current.getMemory().renew(token);
+                                if (!token.equals(key)){
+                                    response.setHeader(configuration.getTokenName(),key);
+                                }
+                            }
+                        })
+        );
     }
 
     @Override

@@ -1,11 +1,11 @@
-package tech.guyi.web.quick.permission.authorization.configuration;
+package tech.guyi.web.quick.permission.configuration;
 
 import lombok.Data;
 
 @Data
 public class AuthorizationConfiguration {
 
-    private String type = "map";
+    private String memory = "map";
     /**
      * 是否自动延期
      */

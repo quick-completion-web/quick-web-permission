@@ -1,33 +1,32 @@
 package tech.guyi.web.quick.permission.authorization;
 
+import tech.guyi.web.quick.permission.authorization.memory.AuthorizationInfoMemory;
 import tech.guyi.web.quick.permission.authorization.memory.AuthorizationInfoMemorySupplier;
 
-import javax.annotation.Resource;
 import java.util.Optional;
 
-public class AuthorizationCurrent {
+public interface AuthorizationCurrent {
 
-    private final ThreadLocal<String> local = new ThreadLocal<>();
+    AuthorizationInfoMemorySupplier getSupplier();
 
-    @Resource
-    private AuthorizationInfoMemorySupplier supplier;
-
-    public void currentKey(String current) {
-        this.local.set(current);
+    default AuthorizationInfoMemory getMemory(){
+        return this.getSupplier().getMemory();
     }
 
-    public Optional<String> currentKey() {
-        return java.util.Optional.ofNullable(local.get());
-    }
+    String getTokenName();
 
-    public Optional<AuthorizationInfo> current(){
+    void currentKey(String key);
+
+    Optional<String> currentKey();
+
+    default Optional<AuthorizationInfo> current(){
         return this.currentKey()
-                .flatMap(key -> supplier.getMemory().get(key));
+                .flatMap(key -> this.getSupplier().getMemory().get(key));
     }
 
-    public <A extends AuthorizationInfo> Optional<A> current(Class<A> classes){
+    default  <A extends AuthorizationInfo> Optional<A> current(Class<A> classes){
         return this.currentKey()
-                .flatMap(key -> supplier.getMemory().get(key,classes));
+                .flatMap(key -> this.getSupplier().getMemory().get(key,classes));
     }
 
 }

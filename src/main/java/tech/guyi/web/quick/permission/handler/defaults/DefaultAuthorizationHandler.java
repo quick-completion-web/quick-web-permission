@@ -1,12 +1,8 @@
 package tech.guyi.web.quick.permission.handler.defaults;
 
 import org.springframework.http.HttpStatus;
-import tech.guyi.web.quick.permission.authorization.AuthorizationCurrent;
-import tech.guyi.web.quick.permission.authorization.AuthorizationInfo;
 import tech.guyi.web.quick.permission.handler.AuthorizationHandler;
 import tech.guyi.web.quick.permission.handler.entry.HandlerRequest;
-
-import javax.annotation.Resource;
 
 /**
  * @author guyi
@@ -16,14 +12,9 @@ import javax.annotation.Resource;
  */
 public class DefaultAuthorizationHandler implements AuthorizationHandler {
 
-    @Resource
-    private AuthorizationCurrent current;
-
     @Override
     public HttpStatus handle(HandlerRequest request) {
-        return current.currentKey()
-                .map(key -> HttpStatus.OK)
-                .orElse(HttpStatus.UNAUTHORIZED);
+        return HttpStatus.OK;
     }
 
 }

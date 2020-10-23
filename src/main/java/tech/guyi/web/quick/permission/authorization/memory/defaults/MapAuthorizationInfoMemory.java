@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.beans.factory.InitializingBean;
 import tech.guyi.web.quick.permission.authorization.AuthorizationInfo;
 import tech.guyi.web.quick.permission.authorization.memory.AuthorizationInfoMemory;
-import tech.guyi.web.quick.permission.authorization.configuration.AuthorizationConfiguration;
+import tech.guyi.web.quick.permission.configuration.PermissionConfiguration;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -64,20 +64,20 @@ public class MapAuthorizationInfoMemory implements AuthorizationInfoMemory, Init
     }
 
     @Resource
-    private AuthorizationConfiguration configuration;
+    private PermissionConfiguration configuration;
     private final ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
 
     @Override
     public void afterPropertiesSet() {
-        if (configuration.getType().equals(this.forType()) && configuration.getTimeout() != -1){
+        if (configuration.getAuthorization().getMemory().equals(this.forType()) && configuration.getAuthorization().getTimeout() != -1){
             service.scheduleWithFixedDelay(() -> {
                 List<AuthorizationInfoEntry> values = new LinkedList<>(authorizations.values());
                 long now = System.currentTimeMillis();
                 values.stream()
-                        .filter(entry -> (now - entry.getTimespan()) >= configuration.getTimeout())
+                        .filter(entry -> (now - entry.getTimespan()) >= configuration.getAuthorization().getTimeout())
                         .map(AuthorizationInfoEntry::getToken)
                         .forEach(authorizations::remove);
-            }, 0, ((int)(configuration.getTimeout() * 0.8)), TimeUnit.MILLISECONDS);
+            }, 0, ((int)(configuration.getAuthorization().getTimeout() * 0.8)), TimeUnit.MILLISECONDS);
         }
     }
 
