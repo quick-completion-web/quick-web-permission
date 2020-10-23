@@ -44,6 +44,11 @@ public class MapAuthorizationInfoMemory implements AuthorizationInfoMemory, Init
     }
 
     @Override
+    public void remove(String key) {
+        this.authorizations.remove(key);
+    }
+
+    @Override
     public Optional<AuthorizationInfo> get(String key) {
         return Optional.ofNullable(this.authorizations.get(key))
                 .map(AuthorizationInfoEntry::getAuthorization);
