@@ -14,6 +14,8 @@ public interface AuthorizationInfoMemory {
 
     <A extends AuthorizationInfo> String save(A authorization, long timespan);
 
+    void remove(String key);
+
     default <A extends AuthorizationInfo> Optional<A> get(String key, Class<A> classes){
         return this.get(key).map(classes::cast);
     }
