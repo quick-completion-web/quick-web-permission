@@ -36,10 +36,13 @@ public class Mapping {
      */
     private boolean authorization = true;
 
-    public Mapping(String url, String method, String authorizationType) {
+    private String detail;
+
+    public Mapping(String url, String method, String authorizationType, String detail) {
         this.url = url;
         this.method = method;
         this.authorizationType = authorizationType;
+        this.detail = detail;
     }
 
     @Override

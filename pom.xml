@@ -17,6 +17,8 @@
 
         <source.plugin.version>3.2.1</source.plugin.version>
         <spring.boot.version>2.3.4.RELEASE</spring.boot.version>
+
+        <quick.web.version>0.0.0.1</quick.web.version>
     </properties>
 
     <name>quick-web-permission</name>
@@ -114,6 +116,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>tech.guyi.web.quick</groupId>
+                <artifactId>quick-web-dependencies</artifactId>
+                <version>${quick.web.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -128,7 +137,6 @@
         <dependency>
             <groupId>tech.guyi.web.quick</groupId>
             <artifactId>quick-web-core</artifactId>
-            <version>0.0.0.1</version>
         </dependency>
 
     </dependencies>

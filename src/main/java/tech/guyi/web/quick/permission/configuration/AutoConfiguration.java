@@ -14,8 +14,10 @@ import tech.guyi.web.quick.permission.handler.AuthorizationHandler;
 import tech.guyi.web.quick.permission.handler.AuthorizationHandlerRepository;
 import tech.guyi.web.quick.permission.handler.defaults.DefaultAuthorizationHandler;
 import tech.guyi.web.quick.permission.handler.defaults.TokenAuthorizationHandler;
+import tech.guyi.web.quick.permission.mapping.MappingInjection;
 import tech.guyi.web.quick.permission.mapping.MappingMatcher;
 import tech.guyi.web.quick.permission.mapping.MappingRepository;
+import tech.guyi.web.quick.permission.mapping.defaults.DefaultMappingInjection;
 import tech.guyi.web.quick.permission.mapping.register.DefaultMappingManagerConfiguration;
 import tech.guyi.web.quick.permission.mapping.register.MappingManagerConfiguration;
 
@@ -62,6 +64,12 @@ public class AutoConfiguration {
     @ConditionalOnMissingBean(MappingManagerConfiguration.class)
     public DefaultMappingManagerConfiguration defaultMappingManagerConfiguration(){
         return new DefaultMappingManagerConfiguration();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(MappingInjection.class)
+    public DefaultMappingInjection defaultMappingInjection(){
+        return new DefaultMappingInjection();
     }
 
     @Bean

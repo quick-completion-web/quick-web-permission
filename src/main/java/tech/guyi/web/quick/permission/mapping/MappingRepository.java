@@ -3,6 +3,7 @@ package tech.guyi.web.quick.permission.mapping;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import tech.guyi.web.quick.permission.annotation.Authorization;
@@ -43,7 +44,16 @@ public class MappingRepository implements CommandLineRunner {
                                 .map(authorization -> e.getKey().getPatternsCondition().getPatterns()
                                         .stream()
                                         .map(pattern -> Arrays.stream(authorization.type())
-                                                .map(type -> this.createMappingFromRequestMappingInfo(e.getKey(), type, pattern))
+                                                .map(type ->
+                                                        this.createMappingFromRequestMappingInfo(
+                                                                e.getKey(),
+                                                                type,
+                                                                pattern,
+                                                                Optional.of(authorization.detail())
+                                                                        .filter(detail -> !StringUtils.isEmpty(detail))
+                                                                        .orElse(null)
+                                                        )
+                                                )
                                                 .collect(Collectors.toList()))
                                         .flatMap(Collection::stream)
                                         .collect(Collectors.toList()))
@@ -59,6 +69,7 @@ public class MappingRepository implements CommandLineRunner {
 
         MappingRegister register = new MappingRegister(this);
         this.configurations.forEach(configurations -> configurations.configure(register));
+        this.injections.forEach(injection -> injection.injection(this.mappings));
     }
 
     /**
@@ -66,7 +77,7 @@ public class MappingRepository implements CommandLineRunner {
      */
     private List<Mapping> mappings = new LinkedList<>();
 
-    private Mapping createMappingFromRequestMappingInfo(RequestMappingInfo info,String type,String pattern){
+    private Mapping createMappingFromRequestMappingInfo(RequestMappingInfo info,String type,String pattern, String detail){
         String method = info.getMethodsCondition().isEmpty() ? ".*" : null;
         if (method == null){
             StringBuilder sb = new StringBuilder("");
@@ -75,11 +86,13 @@ public class MappingRepository implements CommandLineRunner {
             method = sb.substring(0,sb.length() - 1);
         }
         pattern = pattern.replaceAll("\\{[^\\}]+\\}","*");
-        return new Mapping(pattern,method,type);
+        return new Mapping(pattern,method,type,detail);
     }
 
     @Resource
     private List<MappingManagerConfiguration> configurations;
+    @Resource
+    private List<MappingInjection> injections;
 
     /**
      * 获取当前请求匹配的映射

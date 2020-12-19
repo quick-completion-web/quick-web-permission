@@ -31,7 +31,7 @@ public class DefaultAuthorizationCurrent implements AuthorizationCurrent {
     }
 
     public Optional<String> currentKey() {
-        return java.util.Optional.ofNullable(local.get());
+        return Optional.ofNullable(local.get());
     }
 
 }

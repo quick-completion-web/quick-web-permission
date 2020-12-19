@@ -18,6 +18,7 @@ public class MappingBuilder {
     private String pattern;
     private String method;
     private String type;
+    private String detail;
 
     public MappingBuilder(MappingRegister register, boolean authorization) {
         this.register = register;
@@ -45,12 +46,18 @@ public class MappingBuilder {
         return this;
     }
 
+    public MappingBuilder detail(String detail){
+        this.detail = detail;
+        return this;
+    }
+
     public MappingRegister end(){
         Mapping mapping = new Mapping(
                 Optional.ofNullable(this.pattern).orElse("/**"),
                 Optional.ofNullable(this.method).filter(method -> !method.equals("*")).orElse(".*"),
                 Optional.ofNullable(this.type).orElse(Authorization.DEFAULT_TYPE),
-                this.authorization
+                this.authorization,
+                this.detail
         );
         return this.register.register(mapping);
     }

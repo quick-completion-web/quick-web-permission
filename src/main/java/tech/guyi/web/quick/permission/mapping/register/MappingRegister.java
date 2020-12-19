@@ -30,7 +30,7 @@ public class MappingRegister {
      * @return
      */
     public MappingRegister allow(String pathPattern){
-        return this.register(new Mapping(pathPattern, ".*", Authorization.DEFAULT_TYPE, false));
+        return this.register(new Mapping(pathPattern, ".*", Authorization.DEFAULT_TYPE, false,null));
     }
 
     /**
@@ -47,7 +47,7 @@ public class MappingRegister {
      * @return
      */
     public MappingRegister authority(String pathPattern){
-        return this.register(new Mapping(pathPattern, ".*", Authorization.DEFAULT_TYPE));
+        return this.register(new Mapping(pathPattern, ".*", Authorization.DEFAULT_TYPE, null));
     }
 
     public MappingRegister register(Mapping mapping){

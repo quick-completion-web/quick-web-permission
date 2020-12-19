@@ -82,4 +82,8 @@ public class QuickPermissionCoreFilter implements HandlerInterceptor {
         return true;
     }
 
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        this.currents.forEach(current -> current.currentKey(null));
+    }
 }
