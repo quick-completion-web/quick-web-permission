@@ -19,6 +19,8 @@ public @interface Authorization {
      */
     String DEFAULT_TYPE = "default";
 
+    String detail() default "";
+
     /**
      * 拦截类型名称
      * 用于区分使用不同的拦截器
