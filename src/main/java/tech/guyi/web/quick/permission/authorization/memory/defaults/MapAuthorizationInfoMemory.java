@@ -37,9 +37,14 @@ public class MapAuthorizationInfoMemory implements AuthorizationInfoMemory, Init
     }
 
     @Override
+    public <A extends AuthorizationInfo> void save(String key, A authorization, long timespan) {
+        this.authorizations.put(key,new AuthorizationInfoEntry(key,authorization));
+    }
+
+    @Override
     public <A extends AuthorizationInfo> String save(A authorization, long timespan) {
         String key = UUID.randomUUID().toString().replaceAll("-","");
-        this.authorizations.put(key,new AuthorizationInfoEntry(key,authorization));
+        this.save(key,authorization,timespan);
         return key;
     }
 

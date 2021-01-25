@@ -12,6 +12,12 @@ public interface AuthorizationInfoMemory {
 
     boolean contains(String key);
 
+    <A extends AuthorizationInfo> void save(String key,A authorization, long timespan);
+
+    default <A extends AuthorizationInfo> void save(String key,A authorization){
+        this.save(key,authorization,System.currentTimeMillis());
+    }
+
     <A extends AuthorizationInfo> String save(A authorization, long timespan);
 
     default <A extends AuthorizationInfo> String save(A authorization){
